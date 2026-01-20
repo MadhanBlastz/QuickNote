@@ -1,5 +1,4 @@
 # QuickNote
-# QuickNote 📝
 
 QuickNote is a simple, fast, and lightweight note-taking application built for everyday use.  
 It focuses on minimal design, ease of use, and smooth performance—so you can write notes without distractions.
