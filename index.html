@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notes App</title>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background: #020617;
+  margin: 0;
+  padding: 0;
+  color: #e5e7eb;
+}
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #93c5fd;
+}
+
+.note-form {
+  background: #020617;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
+  box-shadow: 0 0 15px rgba(59,130,246,0.15);
+  margin-bottom: 25px;
+}
+
+input, textarea {
+  width: 96%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+.notes {
+  display: grid;
+  gap: 18px;
+}
+
+.note {
+  background: #020617;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
+}
+
+.note h3 {
+  margin: 0 0 6px;
+  color: #bfdbfe;
+}
+
+.note p {
+  color: #94a3b8;
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.edit {
+  background: #2563eb;
+}
+
+.edit:hover {
+  background: #3b82f6;
+}
+
+.delete {
+  background: #dc2626;
+}
+
+.delete:hover {
+  background: #b91c1c;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📝 Notes App</h1>
+
+    <div class="note-form">
+      <input type="text" id="title" placeholder="Title">
+      <textarea id="content" placeholder="Write your note..."></textarea>
+      <button onclick="saveNote()">Add Note</button>
+    </div>
+
+    <div class="notes" id="notes"></div>
+  </div>
+
+  <script>
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+    let editIndex = null;
+
+    function renderNotes() {
+      const notesDiv = document.getElementById("notes");
+      notesDiv.innerHTML = "";
+
+      notes.forEach((note, index) => {
+        notesDiv.innerHTML += `
+          <div class="note">
+            <h3>${note.title}</h3>
+            <p>${note.content}</p>
+            <div class="actions">
+              <button class="edit" onclick="editNote(${index})">✏️ Edit</button>
+              <button class="delete" onclick="deleteNote(${index})">🗑️ Delete</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function saveNote() {
+      const title = document.getElementById("title").value.trim();
+      const content = document.getElementById("content").value.trim();
+
+      if (!title || !content) return;
+
+      if (editIndex !== null) {
+        notes[editIndex] = { title, content };
+        editIndex = null;
+        document.querySelector("button").innerText = "Add Note";
+      } else {
+        notes.push({ title, content });
+      }
+
+      localStorage.setItem("notes", JSON.stringify(notes));
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+      renderNotes();
+    }
+
+    function editNote(index) {
+      document.getElementById("title").value = notes[index].title;
+      document.getElementById("content").value = notes[index].content;
+      editIndex = index;
+      document.querySelector("button").innerText = "Update Note";
+    }
+
+    function deleteNote(index) {
+      notes.splice(index, 1);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      renderNotes();
+    }
+
+    renderNotes();
+  </script>
+
+</body>
+</html>
